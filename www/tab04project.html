@@ -1,0 +1,184 @@
+<!DOCTYPE HTML>
+<HTML>
+
+<HEAD>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!-- A biblioteca bundle já contem os arquivos JS do Bootstrap, Popper, e jQuery.
+    <script src="js/bootstrap.bundle.js"></script>-->
+    <title>Foods</title>
+    <LINK REL="stylesheet" HREF="css/bootstrap.css" />
+    <STYLE>
+        .center-txt {
+            text-align: center;
+            color: yellow;
+            width: 90px;
+            padding: 4px;
+            margin:0;
+            border:0;
+        }
+        .button-selected {
+            background-color: #343a40;
+            color: white;
+            border-radius: 15px;
+        }       
+        .width-button-bar {
+            text-align: center;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            margin-right: 0;
+            margin-left: 0;
+            
+        }
+        .bottom-button-bar {
+            margin:0;
+            padding:0;
+            border:0;
+            width: 100%;
+        }
+        .icon-font {
+            font-size: 40px;   
+        }
+        main {
+            padding-top: 56px;
+            padding-bottom: 50px;
+        }
+    </STYLE>
+    
+  <SCRIPT>
+        //<!-- Obtenha sua própria chave (key), vou cancelar esta... --> 
+        //var key = 'IzigtZUY2Ceiiy4N2uxQlA'; //Conseguir uma chave no site da API... --feito
+        var newsSearch = document.getElementById("selectpicker");
+        var newsSearchText;
+        var url;
+        
+        //Cria CARDS com os dados do JSON
+        //Referência: https://getbootstrap.com/docs/4.3/components/card/
+        function createNewsCards(nData) {
+
+            for (i in nData) {
+                
+                var a = document.createElement("ARTICLE"); // Create a <ARTICLE> element
+                a.setAttribute("class", "card");
+
+                //var nImg = document.createElement("IMG"); // Create a <H2> element
+                
+                var h2 = document.createElement("H2"); // Create a <H2> element
+                h2.setAttribute("class", "card-header");
+                
+                var desc = document.createElement("P"); // Create a <H2> element
+                desc.setAttribute("class", "card-body");
+                
+                //var desc1 = document.createElement("P"); // Create a <H2> element
+                //desc.setAttribute("class", "card-body");
+
+               // var ath = document.createElement("AUTHOR"); // Create a <AUTHOR> element
+                //ath.setAttribute("class", "card-footer");
+
+                //nImg.src = nData[i].urlToImage; // Create a text node
+                //nImg.style.width = '100%'; //The full width is 400px, 10px of border left and right
+                h2.innerText = "Produto: " + nData[i].product; // Create a text node
+                desc.innerText = "Categoria: " + nData[i].category +  "     Fornecedor:  " + nData[i].manufacturer;
+                //desc1.innerText = "Fornecedor:  " + nData[i].manufacturer;
+                //ath.innerText = "by " + nData.articles[i].author + " - " + nData.articles[i].source.name;
+
+                a.appendChild(h2); 
+                a.appendChild(desc);
+                //a.appendChild(desc1);
+                
+                console.log(a);
+                document.getElementById("aluno").appendChild(a);
+
+            } 
+          
+        } //createNewsCards
+
+        //Busca os dados da API (Serviço REST/JSON - AJAX)
+        function reloadPage() {
+
+            newsSearch = document.getElementById("selectpicker");
+            newsSearchText = newsSearch.options[newsSearch.selectedIndex].value;
+
+            //url= 'https://jobs.github.com/positions.json?description=python&full_time=true&location=newyork'
+            url = 'https://thereportoftheweek-api.herokuapp.com/reports?between=2013-1-1%7C2013-6-1&category=' + newsSearchText //+ '&sortBy=publishedAt&apiKey=' + key;
+            document.getElementById("aluno").innerHTML = "";
+            console.log(url);
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.onload = function() {
+
+                if (xhr.status >= 200 && xhr.status < 300) {
+
+                    console.log('success!', JSON.parse(xhr.responseText));
+                    var newsData = JSON.parse(xhr.responseText);
+                    createNewsCards(newsData);
+
+                } else {
+                    
+                    let error_message= "Ops! Erro!!!<br>" + xhr.statusText;
+                    console.log(error_message);
+                    document.getElementById("aluno").innerHTML = error_message;
+                } //if
+
+                console.log('Here we are...');
+            };
+
+            xhr.open('GET', url);
+            xhr.send();
+            
+        } //reloadPage
+
+
+
+
+    </SCRIPT>
+</HEAD>
+
+<BODY lang="pt-br">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <a class="navbar-brand" href="#">&#x1F981; Eloah Noguchi</a>
+
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+            <div class="navbar-nav float-right text-right pr-3">
+                <a class="nav-item nav-link" href="index.html">Splash</a>
+                <a class="nav-item nav-link" href="http://www.fundacaosalvadorarena.org.br/" target="newpage">CEFSA</a>
+                <a class="nav-item nav-link" href="about.html">Sobre</a>
+            </div>
+            
+            <select class="form-control" onchange="reloadPage();" id="selectpicker">
+                    <option value="Energy%20Crisis">Energy Crisis</option>
+                    <option value="Running%20On%20Empty" selected>Running On Empty</option>
+                </select>
+        </div>
+    </nav>
+
+    <main class="container" id="aluno">
+        <hr>
+<!--        <h1><span class="badge badge-success">Projeto do aluno!!</span></h1>-->
+        <p><a href="https://www.tudogostoso.com.br/" target="_apis">Filtre para achar os produtos!</a></p>
+    </main>
+
+    <nav class="navbar fixed-bottom navbar-light bg-light width-button-bar">
+        <div class="row w-100 bottom-button-bar">
+            <div class="col-sm center-txt"><b onclick='window.location="tab01news.html"'>News<br><span class="icon-font">&#x1f4f0;</span></b>
+            </div>
+            <div class="col-sm center-txt"><b onclick='window.location="tab02map.html"'>Map<br><span class="icon-font">&#x1f4cc;</span></b>
+            </div>
+            <div class="col-sm center-txt"><b onclick='window.location="tab03todo.html"'>Todo<br><span class="icon-font">&#x1F4DD;</span></b>
+            </div>
+            <div class="col-sm center-txt button-selected"><b onclick='window.location="tab04project.html"'>Food<br><span class="icon-font">&#x1F981;</span></b>
+            </div>
+        </div>
+    </nav>
+</BODY>
+<!-- carga de scripts do Bootstrap, JQuery, Popper 
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
+</HTML>
